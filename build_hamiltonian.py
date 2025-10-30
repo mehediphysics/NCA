@@ -1,35 +1,56 @@
 import numpy as np
 from fermionic_operators import FermionicOperators
 
-def read_hamiltonian_txt(filename):
-    """Read N, one-body and two-body terms from a plain text file (0-based indices)."""
+
+
+def read_hamiltonian_and_params(filename):
+    """
+    Read N, one-body, two-body Hamiltonian terms, and simulation parameters
+    (t_max, dt, i, j) from a text file.
+    """
     one_body = []
     two_body = []
     N = None
-    
+    t_max = None
+    dt = None
+    i_gf = None
+    j_gf = None
+
     with open(filename, 'r') as f:
         for line in f:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
             parts = line.split()
-            if parts[0].upper() == 'N':
+            key = parts[0].lower()
+            if key == 'n':
                 N = int(parts[1])
+            elif key == 't_max':
+                t_max = float(parts[1])
+            elif key == 'dt':
+                dt = float(parts[1])
+            elif key == 'i':
+                i_gf = int(parts[1])
+            elif key == 'j':
+                j_gf = int(parts[1])
             elif len(parts) == 3:
-                # one-body term: i j coeff
-                i, j, coeff = int(parts[0]), int(parts[1]), float(parts[2])
-                one_body.append((i, j, coeff))
+                one_body.append((int(parts[0]), int(parts[1]), float(parts[2])))
             elif len(parts) == 5:
-                # two-body term: i j k l coeff
-                i, j, k, l, coeff = int(parts[0]), int(parts[1]), int(parts[2]), int(parts[3]), float(parts[4])
-                two_body.append((i, j, k, l, coeff))
+                two_body.append((int(parts[0]), int(parts[1]), int(parts[2]), int(parts[3]), float(parts[4])))
             else:
                 raise ValueError(f"Invalid line: {line}")
-    
+
+    # Check required parameters
     if N is None:
-        raise ValueError("Number of states N not specified in the file.")
-    
-    return N, one_body, two_body
+        raise ValueError("N not specified in the file.")
+    if t_max is None or dt is None:
+        raise ValueError("Time parameters t_max or dt not specified.")
+    if i_gf is None or j_gf is None:
+        raise ValueError("Green's function indices i or j not specified.")
+
+    return N, one_body, two_body, t_max, dt, i_gf, j_gf
+
+
 
 def build_hamiltonian(N, one_body, two_body):
     """Construct the full Hamiltonian matrix for N states."""
@@ -52,7 +73,7 @@ def build_hamiltonian(N, one_body, two_body):
 if __name__ == "__main__":
 
     filename = "input_params.txt"
-    N, one_body, two_body = read_hamiltonian_txt(filename)
+    N, one_body, two_body, t_max, dt, i_gf, j_gf = read_hamiltonian_and_params(filename)
     H = build_hamiltonian(N, one_body, two_body)
     
     print("Number of states:", N)
