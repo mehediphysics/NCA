@@ -1,0 +1,14 @@
+# Number of single-particle states
+N 4
+
+# One-body terms: i j coefficient
+0 0 2.0
+1 1 2.0
+2 2 0.7
+3 3 0.7
+0 2 0.2
+1 3 0.2
+
+# Two-body terms: i j k l coefficient
+0 0 1 1 4.0
+

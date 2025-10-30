@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from second_quant_operators import FermionicOperators  # adjust if class is in the same file
+from fermionic_operators import FermionicOperators  # adjust if class is in the same file
 
 class TestFermionicOperators(unittest.TestCase):
     def test_shapes(self):
