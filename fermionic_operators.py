@@ -38,6 +38,17 @@ class FermionicOperators:
         """Return c_i."""
         return self.c_ops[i]
 
+    def print_occupation(self, psi_n):
+        """
+        Print the occupation number representation of a basis state vector psi_n.
+        Assumes psi_n has a single 1 corresponding to basis state index n.
+        """
+        n_index = np.argmax(np.abs(psi_n))  # find which basis vector is occupied
+        occ = np.array(list(np.binary_repr(n_index, width=self.N)), dtype=int)
+        print(f"Basis index {n_index} -> occupation: {occ}")
+        return occ
+
+
 # Example usage:
 if __name__ == "__main__":
     N = 3
