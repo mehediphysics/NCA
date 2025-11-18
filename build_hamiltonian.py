@@ -7,6 +7,16 @@ def read_hamiltonian_and_params(filename):
     """
     Read N, one-body, two-body Hamiltonian terms, and simulation parameters
     (t_max, dt, i, j) from a text file.
+    Expected fields:
+        N <int>
+        t_max <float>
+        dt <float>
+        i <int>
+        j <int>
+        beta <float>
+
+    One-body terms:  i  j  h_ij
+    Two-body terms:  i  j  k  l  U_ijkl
     """
     one_body = []
     two_body = []
@@ -15,6 +25,7 @@ def read_hamiltonian_and_params(filename):
     dt = None
     i_gf = None
     j_gf = None
+    beta = None  #New parameter
 
     with open(filename, 'r') as f:
         for line in f:
@@ -23,6 +34,7 @@ def read_hamiltonian_and_params(filename):
                 continue
             parts = line.split()
             key = parts[0].lower()
+            
             if key == 'n':
                 N = int(parts[1])
             elif key == 't_max':
@@ -33,6 +45,8 @@ def read_hamiltonian_and_params(filename):
                 i_gf = int(parts[1])
             elif key == 'j':
                 j_gf = int(parts[1])
+            elif key == 'beta':
+                beta = float(parts[1])   # <-- NEW: beta successfully read
             elif len(parts) == 3:
                 one_body.append((int(parts[0]), int(parts[1]), float(parts[2])))
             elif len(parts) == 5:
@@ -47,8 +61,9 @@ def read_hamiltonian_and_params(filename):
         raise ValueError("Time parameters t_max or dt not specified.")
     if i_gf is None or j_gf is None:
         raise ValueError("Green's function indices i or j not specified.")
-
-    return N, one_body, two_body, t_max, dt, i_gf, j_gf
+    if beta is None:
+        raise ValueError("Error: beta missing in input file.")
+    return N, one_body, two_body, t_max, dt, i_gf, j_gf, beta
 
 
 
@@ -77,5 +92,6 @@ if __name__ == "__main__":
     H = build_hamiltonian(N, one_body, two_body)
     
     print("Number of states:", N)
+    print("beta =", beta)
     print("Hamiltonian matrix:")
     print(H)
