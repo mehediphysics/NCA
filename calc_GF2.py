@@ -179,10 +179,10 @@ if __name__ == "__main__":
     # all tied to creation on mode 0 as the "observed" site.
     # ============================================================
     psi0_operator = (
-          (w0  / Z) * (f_ops.get_creation(0))
-        + (wu  / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(2))
-        + (wd  / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(3))
-        + (wud / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(2) @ f_ops.get_creation(3))
+          np.sqrt(w0  / Z) * (f_ops.get_creation(0))
+        + np.sqrt(wu  / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(2))
+        + np.sqrt(wd  / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(3))
+        + np.sqrt(wud / Z) * (f_ops.get_creation(0) @ f_ops.get_creation(2) @ f_ops.get_creation(3))
     )
 
     # Now the many-body initial state is:
