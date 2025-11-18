@@ -38,7 +38,7 @@ if __name__ == "__main__":
     #     + Σ_ijkl U_ijkl c_i† c_j c_k† c_l
     # ============================================================
     filename = "input_params.txt"
-    N, one_body, two_body, t_max, dt, i_gf, j_gf = read_hamiltonian_and_params(filename)
+    N, one_body, two_body, t_max, dt, i_gf, j_gf, beta = read_hamiltonian_and_params(filename)
 
 
 
@@ -88,10 +88,31 @@ if __name__ == "__main__":
     #   ε_d    : "down" level energy
     #   U      : interaction energy when both are occupied
     # ============================================================
-    beta  = 1.0    # inverse temperature β (you can change)
-    eps_u = 0.07   # ε_up
-    eps_d = 0.08   # ε_down
-    U     = 0.9    # interaction energy
+    # ------------------------------------------------------------
+    # Extract thermal energies (eps_u, eps_d, U) from input file
+    #
+    # On-site energies h_ii:
+    #       eps_u = h_22
+    #       eps_d = h_33
+    #
+    # Two-body term:
+    #       U = U_(0,0,1,1)
+    # ------------------------------------------------------------
+    # Extract diagonal one-body h_ii
+    onsite = {}
+    for (i, j, hij) in one_body:
+        if i == j:
+            onsite[i] = hij
+
+    eps_u = onsite[2]     # = 1.7
+    eps_d = onsite[3]     # = 1.7
+
+    # Extract U interaction (0,0,1,1,U)
+    U_list = [Uval for (i, j, k, l, Uval) in two_body if (i == 0 and j == 0 and k == 1 and l == 1)]
+    U = U_list[0] if len(U_list) > 0 else 0.0   # = 4.0
+
+    print(f"eps_u = {eps_u}, eps_d = {eps_d}, U = {U}")
+
 
 
 
@@ -133,7 +154,7 @@ if __name__ == "__main__":
 
     Z = w0 + wu + wd + wud  # partition function
 
-
+    print("Partition function Z =", Z)
 
     # ============================================================
     # Define initial operator O such that:
