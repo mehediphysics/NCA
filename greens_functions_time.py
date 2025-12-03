@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.linalg import expm
-from build_hamiltonian import read_hamiltonian_and_params, build_hamiltonian
+#from build_hamiltonian import read_hamiltonian_and_params, build_hamiltonian
+from build_hamiltonian import (
+    read_hamiltonian_and_params,
+    build_hamiltonian,
+    build_H0,
+)
+
 from fermionic_operators import FermionicOperators
 from tqdm import tqdm
 
