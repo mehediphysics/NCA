@@ -228,14 +228,21 @@ if __name__ == "__main__":
     # Spectral function:
     #   A(ω) = -(1/π) Im G(ω)
     # ============================================================
+    #omega = np.linspace(-10, 10, 10000)
+
+    #G_w = greens_function_lehmann_general(
+        #H, f_ops, i_gf, j_gf, omega,
+        #psi0_operator,
+        #eta=1e-4
+    #)
+
     omega = np.linspace(-10, 10, 10000)
 
     G_w = greens_function_lehmann_general(
-        H, f_ops, i_gf, j_gf, omega,
-        psi0_operator,
-        eta=1e-4
-    )
-
+          H, f_ops, i_gf, j_gf, omega,
+          psi0_operator,
+          eta=1e-4
+          )
 
 
     # ============================================================
