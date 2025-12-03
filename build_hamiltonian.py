@@ -65,6 +65,22 @@ def read_hamiltonian_and_params(filename):
         raise ValueError("Error: beta missing in input file.")
     return N, one_body, two_body, t_max, dt, i_gf, j_gf, beta
 
+def build_H0(N, one_body):
+    """
+    Build only the one-body (non-interacting) Hamiltonian:
+
+        H0 = Σ_ij h_ij c_i† c_j
+
+    This is used for zeroth-order Green's functions (no interaction).
+    """
+    f = FermionicOperators(N)
+    dim = 2 ** N
+    H0 = np.zeros((dim, dim), dtype=complex)
+
+    for i, j, h in one_body:
+        H0 += h * (f.get_creation(i) @ f.get_annihilation(j))
+
+    return H0
 
 
 def build_hamiltonian(N, one_body, two_body):
